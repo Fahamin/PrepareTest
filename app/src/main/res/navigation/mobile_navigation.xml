@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.fahamin.transcomtest.ui.product_view.ProductViewFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_productv_iew" />
+
+    <fragment
+        android:id="@+id/nav_gallery"
+        android:name="com.fahamin.transcomtest.ui.product_add.productAddFragment"
+        android:label="@string/menu_gallery"
+        tools:layout="@layout/fragment_product_add" />
+
+    <fragment
+        android:id="@+id/nav_slideshow"
+        android:name="com.fahamin.transcomtest.ui.product_eidt.SlideshowFragment"
+        android:label="@string/menu_slideshow"
+        tools:layout="@layout/fragment_slideshow" />
+</navigation>
