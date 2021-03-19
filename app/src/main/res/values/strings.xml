@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TranscomTest</string>
+    <string name="app_name">Transcom Test</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -8,8 +8,8 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">ProductView</string>
-    <string name="menu_gallery">ProductAdd</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_home">Product View</string>
+    <string name="menu_gallery">Product Add</string>
+    <string name="menu_slideshow">Product Stock Table</string>
 
 </resources>

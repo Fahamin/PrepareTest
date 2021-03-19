@@ -1,34 +1,29 @@
-package com.fahamin.transcomtest.ui.product_add;
+package com.fahamin.transcomtest;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.fahamin.transcomtest.MainActivity;
-import com.fahamin.transcomtest.R;
 import com.fahamin.transcomtest.database.DatabaseHelper;
+import com.fahamin.transcomtest.database.DatabaseSalesHelper;
 import com.fahamin.transcomtest.model.DataModel;
+import com.fahamin.transcomtest.ui.product_add.GalleryViewModel;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -37,9 +32,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class productAddFragment extends Fragment {
+public class SalesActivity extends AppCompatActivity {
 
-    private GalleryViewModel galleryViewModel;
     EditText nameEdit;
     EditText priceEdit;
     EditText quantityEdit;
@@ -49,34 +43,60 @@ public class productAddFragment extends Fragment {
     ImageButton increaseQuantity;
     Button imageBtn, saveBtn;
     ImageView imageView;
-    Uri actualUri ;
+    Uri actualUri;
     String times, date, productName, quantity, price, supplierName, supplierPhone;
     Calendar calendar;
     private static final int PICK_IMAGE_REQUEST = 0;
     private static final int MY_PERMISSIONS_REQUEST = 5;
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        galleryViewModel = new GalleryViewModel(getContext());
-        View root = inflater.inflate(R.layout.fragment_product_add, container, false);
-
-        return root;
-    }
-
+    int id, flag;
+    DatabaseHelper database;
+    DataModel diaryModel;
+    String ss;
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sales);
 
-        nameEdit = view.findViewById(R.id.product_name_edit);
-        priceEdit = view.findViewById(R.id.price_edit);
-        quantityEdit = view.findViewById(R.id.quantity_edit);
-        supplierNameEdit = view.findViewById(R.id.supplier_name_edit);
-        supplierPhoneEdit = view.findViewById(R.id.supplier_phone_edit);
-        decreaseQuantity = view.findViewById(R.id.decrease_quantity);
-        increaseQuantity = view.findViewById(R.id.increase_quantity);
-        imageBtn = view.findViewById(R.id.select_image);
-        imageView = view.findViewById(R.id.image_view);
-        saveBtn = view.findViewById(R.id.saveBtnID);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
+        database = new DatabaseHelper(this);
+
+
+        Intent intent = getIntent();
+        id = intent.getIntExtra("id", -1);
+        flag = intent.getIntExtra("flag", -1);
+
+        diaryModel = new DataModel();
+
+        diaryModel = database.selectWithId(String.valueOf(id));
+
+
+        init();
+        setData(diaryModel);
+
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.sale_dialog);
+        EditText et = dialog.findViewById(R.id.downloadEdt);
+        Button bt = dialog.findViewById(R.id.downloadUrlBtn);
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String ps = diaryModel.gettotal_quantity();
+
+                 ss = et.getText().toString();
+                int salesvalue = Integer.parseInt(ss);
+                int pss = Integer.parseInt(ps);
+                quantityEdit.setText(String.valueOf(pss - salesvalue));
+                saveData();
+                dialog.dismiss();
+
+            }
+        });
+        dialog.show();
+
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,7 +125,8 @@ public class productAddFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (galleryViewModel.haveStoragePermission()) {
+                GalleryViewModel viewModel = new GalleryViewModel(SalesActivity.this);
+                if (viewModel.haveStoragePermission()) {
                     tryToOpenImageSelector();
 
                 }
@@ -114,10 +135,33 @@ public class productAddFragment extends Fragment {
         });
     }
 
+    private void init() {
+        nameEdit = findViewById(R.id.product_name_edit);
+        priceEdit = findViewById(R.id.price_edit);
+        quantityEdit = findViewById(R.id.quantity_edit);
+        supplierNameEdit = findViewById(R.id.supplier_name_edit);
+        supplierPhoneEdit = findViewById(R.id.supplier_phone_edit);
+        decreaseQuantity = findViewById(R.id.decrease_quantity);
+        increaseQuantity = findViewById(R.id.increase_quantity);
+        imageBtn = findViewById(R.id.select_image);
+        imageView = findViewById(R.id.image_view);
+        saveBtn = findViewById(R.id.saveBtnID);
+    }
+
+    private void setData(DataModel diaryModel) {
+
+        nameEdit.setText(diaryModel.getproduct_name());
+        priceEdit.setText(diaryModel.getPrice_rate());
+
+        supplierNameEdit.setText(diaryModel.getSupplierName());
+        supplierPhoneEdit.setText(diaryModel.getSupplierPhone());
+
+
+    }
+
     private void saveData() {
 
         if (checkValidity()) {
-
 
             Calendar cal = Calendar.getInstance();
             Date chosenDate = cal.getTime();
@@ -146,9 +190,8 @@ public class productAddFragment extends Fragment {
             supplierPhone = supplierPhoneEdit.getText().toString();
 
 
-
             DataModel diaryModel = new DataModel();
-            diaryModel.setId(0);
+            diaryModel.setId(id);
             diaryModel.setproduct_name(productName);
             diaryModel.settotal_quantity(quantity);
             diaryModel.setPrice_rate(price);
@@ -157,19 +200,25 @@ public class productAddFragment extends Fragment {
             diaryModel.setSupplierName(supplierName);
             diaryModel.setSupplierPhone(supplierPhone);
 
-            if(actualUri == null)
-            {
+
+            if (actualUri == null) {
                 String images = "hello";
                 diaryModel.setProduct_image(images);
-            }
-            else  {
+            } else {
                 diaryModel.setProduct_image(actualUri.toString());
             }
 
-            DatabaseHelper database = new DatabaseHelper(getContext());
-            database.insertelement(diaryModel);
+            //main data add
+            database.editelement(diaryModel);
 
-            Toast.makeText(getContext(), "DataSave", Toast.LENGTH_SHORT).show();
+            //sales data add
+            DatabaseSalesHelper salesHelper = new DatabaseSalesHelper(this);
+
+            diaryModel.settotal_quantity(ss);
+            salesHelper.insertelement(diaryModel);
+
+            startActivity(new Intent(this,MainActivity.class));
+            finish();
         }
 
     }
@@ -188,10 +237,10 @@ public class productAddFragment extends Fragment {
     }
 
     public void tryToOpenImageSelector() {
-        if (ContextCompat.checkSelfPermission(getContext(),
+        if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_REQUEST);
             return;
         }
@@ -277,7 +326,7 @@ public class productAddFragment extends Fragment {
             Toast.makeText(getContext(), "Please Add Image", Toast.LENGTH_SHORT).show();
 
             return false;
-        } */else {
+        } */ else {
 
             return true;
         }

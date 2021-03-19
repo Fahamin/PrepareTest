@@ -5,9 +5,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 
+import com.fahamin.transcomtest.ui.gps.GpsFragment;
 import com.fahamin.transcomtest.ui.product_add.productAddFragment;
 import com.fahamin.transcomtest.ui.product_view.ProductViewFragment;
-import com.fahamin.transcomtest.ui.product_eidt.SlideshowFragment;
+import com.fahamin.transcomtest.ui.product_Table.ProductTableFragment;
+import com.fahamin.transcomtest.ui.salesTable.SalesTable;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
@@ -73,15 +75,21 @@ public class MainActivity extends AppCompatActivity {
 
                         break;
 
-                 /*   case R.id.nav_liveTv:
-                            fragmentManager.beginTransaction().replace(R.id.mainContainerId, new LiveTv()).commit();
-                            setTitle("Live Stream Build");
-                        break;*/
+                    case R.id.nav_gps:
+                            fragmentManager.beginTransaction().replace(R.id.mainContainerId, new GpsFragment()).commit();
+                            setTitle("Tracking Gps");
+                        break;
 
                     case R.id.nav_slideshow:
 
-                        fragmentManager.beginTransaction().replace(R.id.mainContainerId, new SlideshowFragment()).commit();
-                        setTitle("Product Table");
+                        fragmentManager.beginTransaction().replace(R.id.mainContainerId, new ProductTableFragment()).commit();
+                        setTitle("Product Stock Table");
+
+                        break;
+                    case R.id.nav_sales:
+
+                        fragmentManager.beginTransaction().replace(R.id.mainContainerId, new SalesTable()).commit();
+                        setTitle("Product Sales Table");
 
                         break;
 
@@ -92,12 +100,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+
 
    /* @Override
     public boolean onSupportNavigateUp() {

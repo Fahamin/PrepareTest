@@ -1,4 +1,4 @@
-package com.fahamin.transcomtest.ui.product_eidt;
+package com.fahamin.transcomtest.ui.product_Table;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

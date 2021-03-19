@@ -3,12 +3,15 @@ package com.fahamin.transcomtest.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,7 +21,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fahamin.transcomtest.EditActivity;
 import com.fahamin.transcomtest.R;
+import com.fahamin.transcomtest.SalesActivity;
 import com.fahamin.transcomtest.database.DatabaseHelper;
 import com.fahamin.transcomtest.model.DataModel;
 
@@ -26,10 +31,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class DataAdapter extends RecyclerView.Adapter<DataAdapter.MyViewHolder> {
+public class DataAdapter extends RecyclerView.Adapter<DataAdapter.MyViewHolder>implements Filterable {
 
     private Context context;
-    private List<DataModel> dataModelList;
+    private List<DataModel> dataModelList,searchList;
     private RecyclerView recyclerView;
     private DataAdapter adapter;
     String serchKey;
@@ -44,7 +49,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.MyViewHolder> 
 
         public TextView titleTv, descriptionTV, datetv, timeTV, rateTV;
         public CardView fullchildCV;
-        public LinearLayout addtioonalLayout, viewDetailLayout, editLayout, deletLayout;
+        public LinearLayout addtioonalLayout, viewDetailLayout, editLayout, deletLayout, salesLayout;
         ImageView imageView;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -62,19 +67,54 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.MyViewHolder> 
             viewDetailLayout = (LinearLayout) itemView.findViewById(R.id.view_details_LAYOUT);
             editLayout = (LinearLayout) itemView.findViewById(R.id.edit_LAYOUT);
             deletLayout = (LinearLayout) itemView.findViewById(R.id.delete_LAYOUT);
-
+            salesLayout = itemView.findViewById(R.id.sales_LAYOUT);
         }
     }
 
     public DataAdapter(Context context, List<DataModel> dataModelList, RecyclerView recyclerView, DataAdapter adapter, String serchKey, TextView messageTV, Activity activity) {
         this.context = context;
         this.dataModelList = dataModelList;
+        this.searchList = dataModelList;
         this.recyclerView = recyclerView;
         this.adapter = adapter;
         this.serchKey = serchKey;
         this.messageTV = messageTV;
         this.activity = activity;
     }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+
+                String charString = charSequence.toString();
+                if (charString.isEmpty()) {
+                    dataModelList = searchList;
+                } else {
+                    ArrayList<DataModel> filterList = new ArrayList<>();
+
+                    for (DataModel model : searchList) {
+                        if (model.getproduct_name().toLowerCase().contains(charString)) {
+                            filterList.add(model);
+                        }
+                    }
+                    dataModelList = filterList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = dataModelList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                dataModelList = (ArrayList<DataModel>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
 
     @NonNull
     @Override
@@ -97,6 +137,8 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.MyViewHolder> 
         myViewHolder.timeTV.setText(dataModel.getTime());
         myViewHolder.imageView.setImageURI(Uri.parse(dataModel.getProduct_image()));
 
+
+
         myViewHolder.fullchildCV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,6 +149,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.MyViewHolder> 
                     myViewHolder.addtioonalLayout.setVisibility(View.GONE);
             }
         });
+
         myViewHolder.fullchildCV.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -127,29 +170,37 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.MyViewHolder> 
             }
         });
 
-/*
+
         myViewHolder.viewDetailLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(context,Details.class);
+                Intent intent = new Intent(context, EditActivity.class);
                 intent.putExtra("id", dataModel.getId());
                 context.startActivity(intent);
 
             }
         });
 
+        myViewHolder.salesLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, SalesActivity.class);
+                intent.putExtra("id", dataModel.getId());
+                context.startActivity(intent);
+            }
+        });
 
         myViewHolder.editLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(context, Edit.class);
+                Intent intent = new Intent(context, EditActivity.class);
                 intent.putExtra("id", dataModel.getId());
                 context.startActivity(intent);
 
             }
-        });*/
+        });
 
 
         myViewHolder.deletLayout.setOnClickListener(new View.OnClickListener() {
@@ -167,9 +218,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.MyViewHolder> 
                         .setMessage("Are you sure you want to really delete this data?")
                         .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-
                                 deleteFile(dataModel, recyclerView, adapter, context);
-
 
                             }
                         })

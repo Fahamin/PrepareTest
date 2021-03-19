@@ -1,56 +1,61 @@
-package com.fahamin.transcomtest.ui.product_eidt;
+package com.fahamin.transcomtest.ui.salesTable;
+
+import androidx.lifecycle.ViewModelProvider;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import com.fahamin.transcomtest.R;
 import com.fahamin.transcomtest.database.DatabaseHelper;
+import com.fahamin.transcomtest.database.DatabaseSalesHelper;
 import com.fahamin.transcomtest.model.DataModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ir.androidexception.datatable.DataTable;
-import ir.androidexception.datatable.model.DataTableHeader;
-import ir.androidexception.datatable.model.DataTableRow;
+public class SalesTable extends Fragment {
 
-public class SlideshowFragment extends Fragment {
-
-    private SlideshowViewModel slideshowViewModel;
-    DatabaseHelper diaryDatabase;
+    private SalesTableViewModel mViewModel;
+    DatabaseSalesHelper salesHelper ;
     TableLayout tableLayout;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        slideshowViewModel =
-                new ViewModelProvider(this).get(SlideshowViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_slideshow, container, false);
-
-        return root;
+    public static SalesTable newInstance() {
+        return new SalesTable();
     }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.sales_table_fragment, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mViewModel = new ViewModelProvider(this).get(SalesTableViewModel.class);
+        // TODO: Use the ViewModel
+    }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        diaryDatabase = new DatabaseHelper(getContext());
+        salesHelper = new DatabaseSalesHelper(getContext());
         tableLayout = view.findViewById(R.id.tableLayoutProduct);
         List<DataModel> prouctList = new ArrayList<>();
-        prouctList = diaryDatabase.getAllitem();
+        prouctList = salesHelper.getAllitem();
         createColumns();
         datasetTable(prouctList);
     }
@@ -108,7 +113,7 @@ public class SlideshowFragment extends Fragment {
                     TableRow.LayoutParams.FILL_PARENT,
                     TableRow.LayoutParams.WRAP_CONTENT));
         }
-        
+
     }
 
     private void createColumns() {
@@ -117,7 +122,7 @@ public class SlideshowFragment extends Fragment {
                 TableRow.LayoutParams.MATCH_PARENT,
                 TableRow.LayoutParams.WRAP_CONTENT));
 
-       //date
+        //date
         TextView textViewId = new TextView(getContext());
         textViewId.setText("Date");
         textViewId.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
@@ -171,7 +176,7 @@ public class SlideshowFragment extends Fragment {
 
         // Name Column
         textViewName = new TextView(getContext());
-        textViewName.setText("----------");
+        textViewName.setText("------------");
         textViewName.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         textViewName.setPadding(5, 5, 5, 0);
         tableRow.addView(textViewName);

@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context=".ui.product_eidt.SlideshowFragment">
+    android:orientation="vertical"
+    tools:context=".ui.salesTable.SalesTable">
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -22,4 +21,4 @@
         </TableLayout>
 
     </ScrollView>
-</LinearLayout>
+</FrameLayout>
