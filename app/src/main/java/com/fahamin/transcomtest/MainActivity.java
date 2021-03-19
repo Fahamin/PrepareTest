@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_slideshow:
 
                         fragmentManager.beginTransaction().replace(R.id.mainContainerId, new SlideshowFragment()).commit();
-                        setTitle("Favorite");
+                        setTitle("Product Table");
 
                         break;
 

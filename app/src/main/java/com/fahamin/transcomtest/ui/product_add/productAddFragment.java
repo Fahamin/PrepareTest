@@ -49,7 +49,7 @@ public class productAddFragment extends Fragment {
     ImageButton increaseQuantity;
     Button imageBtn, saveBtn;
     ImageView imageView;
-    Uri actualUri;
+    Uri actualUri ;
     String times, date, productName, quantity, price, supplierName, supplierPhone;
     Calendar calendar;
     private static final int PICK_IMAGE_REQUEST = 0;
@@ -145,6 +145,7 @@ public class productAddFragment extends Fragment {
             supplierPhone = supplierPhoneEdit.getText().toString();
 
 
+
             DataModel diaryModel = new DataModel();
             diaryModel.setId(0);
             diaryModel.setproduct_name(productName);
@@ -154,8 +155,15 @@ public class productAddFragment extends Fragment {
             diaryModel.setTime(times);
             diaryModel.setSupplierName(supplierName);
             diaryModel.setSupplierPhone(supplierPhone);
-            diaryModel.setProduct_image(actualUri.toString());
 
+            if(actualUri == null)
+            {
+                String images = "hello";
+                diaryModel.setProduct_image(images);
+            }
+            else  {
+                diaryModel.setProduct_image(actualUri.toString());
+            }
 
             DatabaseHelper database = new DatabaseHelper(getContext());
             database.insertelement(diaryModel);
@@ -262,12 +270,13 @@ public class productAddFragment extends Fragment {
             priceEdit.setError("This field is required !!!");
             return false;
 
-        } else if (actualUri== null) {
+        } /*else if (actualUri == null) {
             imageBtn.setError("add image");
             imageView.setImageResource(R.drawable.pepsi);
-            return true;
+            Toast.makeText(getContext(), "Please Add Image", Toast.LENGTH_SHORT).show();
 
-        } else {
+            return false;
+        } */else {
 
             return true;
         }
