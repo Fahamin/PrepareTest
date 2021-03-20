@@ -1,5 +1,6 @@
 package com.fahamin.transcomtest;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -23,7 +24,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
         db = new DbUser_Helper(LoginActivity.this);
 
         userName = findViewById(R.id.inputEmailEtdId);
@@ -42,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (id == -1) {
                     Toast.makeText(LoginActivity.this, "login failed ", Toast.LENGTH_SHORT).show();
                 } else {
-                     startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 }
             }
         });

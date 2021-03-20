@@ -22,7 +22,7 @@
             android:title="Product Sales Table" />
         <item
             android:id="@+id/nav_gps"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_baseline_location_on_24"
             android:title="Gps Location" />
     </group>
 </menu>

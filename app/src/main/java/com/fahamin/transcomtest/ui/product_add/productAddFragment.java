@@ -2,6 +2,9 @@ package com.fahamin.transcomtest.ui.product_add;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -20,6 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -49,7 +53,7 @@ public class productAddFragment extends Fragment {
     ImageButton increaseQuantity;
     Button imageBtn, saveBtn;
     ImageView imageView;
-    Uri actualUri ;
+    Uri actualUri;
     String times, date, productName, quantity, price, supplierName, supplierPhone;
     Calendar calendar;
     private static final int PICK_IMAGE_REQUEST = 0;
@@ -146,7 +150,6 @@ public class productAddFragment extends Fragment {
             supplierPhone = supplierPhoneEdit.getText().toString();
 
 
-
             DataModel diaryModel = new DataModel();
             diaryModel.setId(0);
             diaryModel.setproduct_name(productName);
@@ -157,22 +160,36 @@ public class productAddFragment extends Fragment {
             diaryModel.setSupplierName(supplierName);
             diaryModel.setSupplierPhone(supplierPhone);
 
-            if(actualUri == null)
-            {
+            if (actualUri == null) {
                 String images = "hello";
                 diaryModel.setProduct_image(images);
-            }
-            else  {
+            } else {
                 diaryModel.setProduct_image(actualUri.toString());
             }
 
             DatabaseHelper database = new DatabaseHelper(getContext());
             database.insertelement(diaryModel);
 
+            NotificationCompat.Builder builder =
+                    new NotificationCompat.Builder(getContext())
+                            .setSmallIcon(R.drawable.ic_baseline_notifications_active_24)
+                            .setContentTitle(diaryModel.getproduct_name())
+                            .setContentText("New Product Add");
+
+            Intent notificationIntent = new Intent(getContext(), MainActivity.class);
+            PendingIntent contentIntent = PendingIntent.getActivity(getContext(), 0, notificationIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(contentIntent);
+
+            // Add as notification
+            NotificationManager manager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.notify(0, builder.build());
             Toast.makeText(getContext(), "DataSave", Toast.LENGTH_SHORT).show();
         }
 
     }
+
+
 
     private void subtractOneToQuantity() {
         String previousValueString = quantityEdit.getText().toString();
@@ -277,7 +294,7 @@ public class productAddFragment extends Fragment {
             Toast.makeText(getContext(), "Please Add Image", Toast.LENGTH_SHORT).show();
 
             return false;
-        } */else {
+        } */ else {
 
             return true;
         }

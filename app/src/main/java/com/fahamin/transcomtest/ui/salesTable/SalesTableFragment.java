@@ -18,21 +18,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fahamin.transcomtest.R;
-import com.fahamin.transcomtest.database.DatabaseHelper;
 import com.fahamin.transcomtest.database.DatabaseSalesHelper;
 import com.fahamin.transcomtest.model.DataModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SalesTable extends Fragment {
+public class SalesTableFragment extends Fragment {
 
     private SalesTableViewModel mViewModel;
     DatabaseSalesHelper salesHelper ;
     TableLayout tableLayout;
 
-    public static SalesTable newInstance() {
-        return new SalesTable();
+    public static SalesTableFragment newInstance() {
+        return new SalesTableFragment();
     }
 
     @Override

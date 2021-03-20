@@ -3,11 +3,15 @@ package com.fahamin.transcomtest;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -51,7 +55,9 @@ public class SalesActivity extends AppCompatActivity {
     int id, flag;
     DatabaseHelper database;
     DataModel diaryModel;
-    String ss;
+    String ss  ;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,12 +87,14 @@ public class SalesActivity extends AppCompatActivity {
         dialog.setContentView(R.layout.sale_dialog);
         EditText et = dialog.findViewById(R.id.downloadEdt);
         Button bt = dialog.findViewById(R.id.downloadUrlBtn);
+        et.setText("1");
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String ps = diaryModel.gettotal_quantity();
 
                  ss = et.getText().toString();
+
                 int salesvalue = Integer.parseInt(ss);
                 int pss = Integer.parseInt(ps);
                 quantityEdit.setText(String.valueOf(pss - salesvalue));
@@ -216,8 +224,21 @@ public class SalesActivity extends AppCompatActivity {
 
             diaryModel.settotal_quantity(ss);
             salesHelper.insertelement(diaryModel);
+            NotificationCompat.Builder builder =
+                    new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.drawable.ic_baseline_notifications_active_24)
+                            .setContentTitle(diaryModel.getproduct_name())
+                            .setContentText("This Product sales now");
 
-            startActivity(new Intent(this,MainActivity.class));
+            Intent notificationIntent = new Intent(this, MainActivity.class);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(contentIntent);
+
+            // Add as notification
+            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.notify(0, builder.build());
+
             finish();
         }
 

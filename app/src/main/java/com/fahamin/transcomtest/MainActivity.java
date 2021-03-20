@@ -3,13 +3,12 @@ package com.fahamin.transcomtest;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Menu;
 
 import com.fahamin.transcomtest.ui.gps.GpsFragment;
 import com.fahamin.transcomtest.ui.product_add.productAddFragment;
 import com.fahamin.transcomtest.ui.product_view.ProductViewFragment;
 import com.fahamin.transcomtest.ui.product_Table.ProductTableFragment;
-import com.fahamin.transcomtest.ui.salesTable.SalesTable;
+import com.fahamin.transcomtest.ui.salesTable.SalesTableFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
@@ -88,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_sales:
 
-                        fragmentManager.beginTransaction().replace(R.id.mainContainerId, new SalesTable()).commit();
+                        fragmentManager.beginTransaction().replace(R.id.mainContainerId, new SalesTableFragment()).commit();
                         setTitle("Product Sales Table");
 
                         break;

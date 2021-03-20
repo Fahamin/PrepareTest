@@ -1,5 +1,6 @@
 package com.fahamin.transcomtest;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -24,6 +25,10 @@ public class RegesterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regester);
 
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
         userNameEDT = findViewById(R.id.inputEmailEtdId);
         userPassEdt = findViewById(R.id.inputPassEtdId);
         regBtn = findViewById(R.id.btn_login);
